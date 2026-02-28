@@ -2,7 +2,6 @@ import numpy as np
 from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
 
-
 V_lung = 3000.0   # mL  (adult male respiratory volume)
 
 # Bacterial growth 
