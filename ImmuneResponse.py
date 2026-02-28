@@ -189,16 +189,3 @@ ax.legend(fontsize=8); ax.grid(True, alpha=0.3)
 
 plt.tight_layout()
 plt.show()
-
-
-print("=" * 60)
-print("  Strep. Pneumoniae Model — Final State (t = 168 h)")
-print("=" * 60)
-for label, sol in [("Healthy", sol_h), ("Asthmatic", sol_a)]:
-    B_f, MA_f, N_f, Mv_f = sol.y[:, -1]
-    print(f"\n{label}:")
-    print(f"  Bacteria (B)     : {B_f:.3e} CFU/mL  ({100*B_f/K_max:.2f}% of K_max)")
-    print(f"  Macrophages (MA) : {MA_f:.3e} cells")
-    print(f"  Neutrophils (N)  : {N_f:.3e} cells")
-    print(f"  Mucus Vol (Mv)   : {Mv_f:.1f} mL")
-print()
