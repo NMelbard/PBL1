@@ -2,6 +2,14 @@ import numpy as np
 from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
 
+u = 0.057 # h-1
+K = 2.3e8 #CFU/ml
+o = 10e3 #input of CFU/ml/h 
+
+#o IS A PLACEHOLDER FOR MICROASPIRATION COEFFICIENT *  BACTERIAL DENSITY IN THE NASAL PHARYNX AT ONE TIME. 
+
+c = [u, K, o] # constants vector (recommended format by Prof. Kim)
+
 V_lung = 3000.0   # mL  (adult male respiratory volume)
 
 # Bacterial growth 
@@ -75,7 +83,7 @@ def odes(t, y, p):
     C = cytokine(B, C0)
 
     # dB/dt: Input - mucociliary - macrophage killing - neutrophil killing ---
-    growth     = r_growth * B * (1.0 - B / K_max)
+    growth     = c[0] * B * (1 - (B/c[1])) + c[2]
     # Mucociliary clearance: impaired when Mv > Mv_ref (excess mucus traps cilia)
     Mv_ref     = sigma_basal / gamma
     muco_clear = gamma * B * (Mv_ref / Mv)
@@ -188,3 +196,16 @@ ax.legend(fontsize=8); ax.grid(True, alpha=0.3)
 
 plt.tight_layout()
 plt.show()
+
+
+print("=" * 60)
+print("  Strep. Pneumoniae Model — Final State (t = 168 h)")
+print("=" * 60)
+for label, sol in [("Healthy", sol_h), ("Asthmatic", sol_a)]:
+    B_f, MA_f, N_f, Mv_f = sol.y[:, -1]
+    print(f"\n{label}:")
+    print(f"  Bacteria (B)     : {B_f:.3e} CFU/mL  ({100*B_f/K_max:.2f}% of K_max)")
+    print(f"  Macrophages (MA) : {MA_f:.3e} cells")
+    print(f"  Neutrophils (N)  : {N_f:.3e} cells")
+    print(f"  Mucus Vol (Mv)   : {Mv_f:.1f} mL")
+print()
