@@ -1,0 +1,31 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parameters
+k_R = 20.0
+gamma_R = 0.49
+
+# Time
+t_max = 50
+dt = 0.1
+time = np.arange(0, t_max, dt)
+
+# mRNA
+m = np.zeros_like(time)
+
+# Simulation
+for i in range(1, len(time)):
+    dm_dt = k_R - gamma_R * m[i-1]
+    m[i] = m[i-1] + dm_dt * dt
+
+# TRUE transcription rate (constant)
+transcription_rate = np.full_like(time, k_R)
+
+# Plot
+plt.plot(time, m, label="mRNA level")
+plt.plot(time, transcription_rate, label="Transcription rate (k_R)")
+plt.xlabel("Time (min)")
+plt.ylabel("Value")
+plt.title("mRNA and Transcription Rate")
+plt.legend()
+plt.show()
