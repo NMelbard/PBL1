@@ -1,0 +1,46 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parameters
+k_R = 20.0
+gamma_R = 0.49
+
+k_P = 2.28
+gamma_P = 0.00057
+
+# Time
+t_max = 50
+dt = 0.1
+time = np.arange(0, t_max, dt)
+
+# Variables
+m = np.zeros_like(time)
+P = np.zeros_like(time)
+
+# Simulation
+for i in range(1, len(time)):
+    # transcription → mRNA
+    dm_dt = k_R - gamma_R * m[i-1]
+    m[i] = m[i-1] + dm_dt * dt
+
+    # translation → protein
+    dP_dt = k_P * m[i-1] - gamma_P * P[i-1]
+    P[i] = P[i-1] + dP_dt * dt
+
+# Plot 1: Transcription (mRNA vs time)
+plt.figure()
+plt.plot(time, m, label="mRNA (transcription output)")
+plt.xlabel("Time (min)")
+plt.ylabel("mRNA level")
+plt.title("Transcription: mRNA Production vs Time")
+plt.legend()
+plt.show()
+
+# Plot 2: Translation (protein vs time)
+plt.figure()
+plt.plot(time, P, label="Protein (translation output)")
+plt.xlabel("Time (min)")
+plt.ylabel("Protein level")
+plt.title("Translation: Protein Production vs Time")
+plt.legend()
+plt.show()
