@@ -33,6 +33,13 @@ for i in range(1, len(time)):
 # Max (steady-state) mRNA
 m_ss = k_R / gamma_R
 
+# Find time when mRNA reaches ~steady state (within 1%)
+threshold = 0.99 * m_ss
+
+# first index where mRNA is close enough to steady state
+reach_idx = np.where(m >= threshold)[0][0]
+t_reach = time[reach_idx]
+
 # Midpoint for protein slope estimate
 mid_idx = len(time) // 2
 
@@ -48,7 +55,11 @@ t_mid = time[mid_idx]
 plt.figure()
 plt.plot(time, m, label="mRNA (transcription output)")
 
-plt.axhline(m_ss, color='red', linestyle='--', label=f"Max mRNA ≈ {m_ss:.2f}")
+plt.axhline(m_ss, color='red', linestyle='--',
+            label=f"Max mRNA ≈ {m_ss:.2f}")
+
+plt.axvline(t_reach, color='green', linestyle='--',
+            label=f"~Max reached at t ≈ {t_reach:.2f} min")
 
 plt.xlabel("Time (min)")
 plt.ylabel("mRNA level")
