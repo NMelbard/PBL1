@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Parameters
+# Parameters for Ecoli
 
 #trancription: dm/dt = k_R - gamma_R * m
 k_R = 20.0 #mRNA production rate (mRNA/min)
