@@ -1,12 +1,15 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Parameters
-k_R = 20.0
-gamma_R = 0.49
+# Parameters for Ecoli
 
-k_P = 2.28
-gamma_P = 0.00057
+#trancription: dm/dt = k_R - gamma_R * m
+k_R = 20.0 #mRNA production rate (mRNA/min)
+gamma_R = 0.49 #degradation rate of mRNA (1/min)
+
+#translation: dP/dt = k_P * m - gamma_P * P
+k_P = 2.28 #protein production rate (proteins/mRNA/min)
+gamma_P = 0.00057 #degradation rate of protein (1/min)
 
 # Time
 t_max = 50
@@ -27,20 +30,71 @@ for i in range(1, len(time)):
     dP_dt = k_P * m[i-1] - gamma_P * P[i-1]
     P[i] = P[i-1] + dP_dt * dt
 
-# Plot 1: Transcription (mRNA vs time)
+# Max (steady-state) mRNA
+m_ss = k_R / gamma_R
+
+# Find time when mRNA reaches ~steady state (within 1%)
+threshold = 0.99 * m_ss
+
+# first index where mRNA is close enough to steady state
+reach_idx = np.where(m >= threshold)[0][0]
+t_reach = time[reach_idx]
+
+# Midpoint for protein slope estimate
+mid_idx = len(time) // 2
+
+# Numerical slope at midpoint (finite difference)
+dP_dt_mid = (P[mid_idx + 1] - P[mid_idx - 1]) / (2 * dt)
+
+# Line tangent at midpoint
+P_mid = P[mid_idx]
+t_mid = time[mid_idx]
+
+
+#Plot 1: Transcription (mRNA vs time)
 plt.figure()
 plt.plot(time, m, label="mRNA (transcription output)")
+
+plt.axhline(m_ss, color='red', linestyle='--',
+            label=f"Max mRNA ≈ {m_ss:.2f}")
+
+plt.axvline(t_reach, color='green', linestyle='--',
+            label=f"~Max reached at t ≈ {t_reach:.2f} min")
+
 plt.xlabel("Time (min)")
 plt.ylabel("mRNA level")
 plt.title("Transcription: mRNA Production vs Time")
 plt.legend()
 plt.show()
 
-# Plot 2: Translation (protein vs time)
+#Plot 2: Translation (protein vs time)
 plt.figure()
 plt.plot(time, P, label="Protein (translation output)")
+
+# Tangent line at midpoint
+t_line = np.linspace(t_mid - 10, t_mid + 10, 100)
+P_tangent = P_mid + dP_dt_mid * (t_line - t_mid)
+
+plt.plot(t_line, P_tangent, linestyle='--',
+         label=f"Slope at midpoint ≈ {dP_dt_mid:.2f} proteins/min")
+
 plt.xlabel("Time (min)")
 plt.ylabel("Protein level")
 plt.title("Translation: Protein Production vs Time")
+plt.legend()
+plt.show()
+
+#Plot 3: Both on same graph (scaled)
+
+# Normalize
+m_norm = m / np.max(m)
+P_norm = P / np.max(P)
+
+plt.figure()
+plt.plot(time, m_norm, label="mRNA (normalized)")
+plt.plot(time, P_norm, label="Protein (normalized)")
+plt.xlabel("Time (min)")
+plt.ylabel("Normalized level")
+plt.title("Transcription and Translation (Scaled)")
 plt.legend()
 plt.show()
