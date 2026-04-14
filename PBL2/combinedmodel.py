@@ -54,7 +54,7 @@ def default_bioreactor_geometry():
         "CELL_SURFACE_AREA": area,
         "CELL_VOLUME": v_cell,
         "OUTSIDE_VOLUME": max(v_out, 1e-9),
-        "D_glucose": 6.0e-5 * 1e-3,  # notebook used this scaling (m²/s)
+        "D_glucose": 6.0e-5 * 1e-3,  
     }
 
 
